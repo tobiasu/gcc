@@ -408,9 +408,10 @@ CND(FNDELAY, "Nonblocking")
 
 */
 
-/* ioctl(2) requests are "int" in UNIX, but "unsigned long" on FreeBSD */
+/* ioctl(2) requests are "int" in UNIX, but "unsigned long" on *BSD */
 
-#if defined (__FreeBSD__) || defined (__DragonFly__)
+#if defined (__FreeBSD__) || defined (__DragonFly__) \
+    defined (__OpenBSD__) || defined (__NetBSD__)
 # define CNI CNU
 # define IOCTL_Req_T "Interfaces.C.unsigned_long"
 #else
