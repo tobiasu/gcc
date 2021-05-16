@@ -412,7 +412,7 @@ CND(FNDELAY, "Nonblocking")
 
 #if defined (__FreeBSD__) || defined (__DragonFly__)
 # define CNI CNU
-# define IOCTL_Req_T "Interfaces.C.unsigned"
+# define IOCTL_Req_T "Interfaces.C.unsigned_long"
 #else
 # define CNI CND
 # define IOCTL_Req_T "Interfaces.C.int"
