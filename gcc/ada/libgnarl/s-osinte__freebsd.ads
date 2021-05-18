@@ -529,7 +529,7 @@ package System.OS_Interface is
    pragma Import (C, pthread_attr_getschedparam, "pthread_attr_getschedparam");
 
    function sched_yield return int;
-   pragma Import (C, sched_yield, "pthread_yield");
+   pragma Import (C, sched_yield, "sched_yield");
 
    --------------------------
    -- P1003.1c  Section 16 --
