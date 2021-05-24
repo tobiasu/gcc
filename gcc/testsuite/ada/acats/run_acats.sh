@@ -1,4 +1,5 @@
 #!/bin/sh
+set -x
 
 if [ "$testdir" = "" ]; then
    echo You must use make check or make check-ada

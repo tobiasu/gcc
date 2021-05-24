@@ -1,4 +1,5 @@
 #!/bin/sh
+set -x
 # Run ACATS with the GNU Ada compiler
 
 # The following functions are to be customized if you run in cross

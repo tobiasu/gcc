@@ -31,6 +31,7 @@
 
 --  This version is for POSIX-like operating systems
 
+with System.OS_Constants;
 package body System.OS_Primitives is
 
    --  ??? These definitions are duplicated from System.OS_Interface
@@ -38,7 +39,10 @@ package body System.OS_Primitives is
    --  these declarations in System.OS_Interface and move these ones in
    --  the spec.
 
-   type time_t is new Long_Integer;
+   type time_t is
+      range -(2 ** (System.OS_Constants.SIZEOF_tv_sec * 8 - 1)) ..
+            +(2 ** (System.OS_Constants.SIZEOF_tv_sec * 8 - 1)) - 1;
+   for time_t'Size use System.OS_Constants.SIZEOF_tv_sec * 8;
 
    type timespec is record
       tv_sec  : time_t;
@@ -47,7 +51,7 @@ package body System.OS_Primitives is
    pragma Convention (C, timespec);
 
    function nanosleep (rqtp, rmtp : not null access timespec) return Integer;
-   pragma Import (C, nanosleep, "nanosleep");
+   pragma Import (C, nanosleep, System.OS_Constants.Nanosleep_Linkname);
 
    -----------
    -- Clock --
@@ -77,7 +81,8 @@ package body System.OS_Primitives is
       function gettimeofday
         (Tv : access timeval;
          Tz : System.Address := System.Null_Address) return Integer;
-      pragma Import (C, gettimeofday, "gettimeofday");
+      pragma Import (C, gettimeofday,
+                     System.OS_Constants.Gettimeofday_Linkname);
 
    begin
       --  The return codes for gettimeofday are as follows (from man pages):

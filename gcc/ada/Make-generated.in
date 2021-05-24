@@ -23,6 +23,8 @@ ada/stamp-gen_il: $(fsrcdir)/ada/gen_il* $(fsrcdir)/ada/libgnat/a-sto*.ad? $(fsr
 	$(CP) -f $(fsrcdir)/ada/libgnat/a-sto*.ad? ada/gen_il
 	$(CP) -f $(fsrcdir)/ada/libgnat/a-stteou__bootstrap.ads ada/gen_il/a-stteou.ads
 	cd ada/gen_il ; gnatmake $(GEN_IL_FLAGS) gen_il-main.adb
+	# NetBSD: gcc6-aux builds gen_il-main with trampolines, needs executable stack
+	-paxctl +m ada/gen_il/gen_il-main
 	# ignore errors when running gen_il-main due to bootstrap
 	# considerations
 	-cd ada/gen_il ; ./gen_il-main
