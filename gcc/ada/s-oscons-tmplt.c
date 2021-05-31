@@ -1940,6 +1940,13 @@ CST(Inet_Ntop_Linkname, "")
 #endif
 CST(Socket_Linkname, "")
 
+#if defined (__NetBSD__)
+# define Select_Linkname "__select50"
+#else
+# define Select_Linkname "select"
+#endif
+CST(Select_Linkname, "")
+
 #if defined(_WIN32)
 # define Poll_Linkname "WSAPoll"
 #else

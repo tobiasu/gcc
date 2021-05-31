@@ -39,7 +39,6 @@ with GNAT.OS_Lib; use GNAT.OS_Lib;
 with GNAT.Task_Lock;
 
 with Interfaces.C; use Interfaces.C;
-with System.OS_Constants;
 
 package body GNAT.Sockets.Thin is
 
