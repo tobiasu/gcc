@@ -42,6 +42,7 @@ with GNAT.Sockets.Thin_Common;
 
 with System;
 with System.CRTL;
+with System.OS_Constants;
 
 package GNAT.Sockets.Thin is
 
@@ -256,7 +257,7 @@ private
    pragma Import (C, C_Getsockname, "getsockname");
    pragma Import (C, C_Getsockopt, "getsockopt");
    pragma Import (C, C_Listen, "listen");
-   pragma Import (C, C_Select, "select");
+   pragma Import (C, C_Select, System.OS_Constants.Select_Linkname);
    pragma Import (C, C_Setsockopt, "setsockopt");
    pragma Import (C, C_Shutdown, "shutdown");
    pragma Import (C, C_Socketpair, "socketpair");
