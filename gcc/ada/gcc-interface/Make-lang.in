@@ -1027,7 +1027,7 @@ check_acats_subdirs=$(wordlist 1, \
 check_acats_targets = $(addprefix check-acats, $(check_acats_subdirs))
 
 check-acats:
-	@test -d $(ACATSDIR) || mkdir -p $(ACATSDIR); \
+	set -x; test -d $(ACATSDIR) || mkdir -p $(ACATSDIR); \
 	rootme=`${PWD_COMMAND}`; export rootme; \
 	EXPECT=$(EXPECT); export EXPECT; \
 	if [ -z "$(CHAPTERS)" ] && [ -n "$(filter -j%, $(MFLAGS))" ]; \

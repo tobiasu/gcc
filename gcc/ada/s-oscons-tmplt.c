@@ -410,7 +410,7 @@ CND(FNDELAY, "Nonblocking")
 
 /* ioctl(2) requests are "int" in UNIX, but "unsigned long" on *BSD */
 
-#if defined (__FreeBSD__) || defined (__DragonFly__) \
+#if defined (__FreeBSD__) || defined (__DragonFly__) || \
     defined (__OpenBSD__) || defined (__NetBSD__)
 # define CNI CNU
 # define IOCTL_Req_T "Interfaces.C.unsigned_long"
@@ -1933,6 +1933,13 @@ CST(Inet_Pton_Linkname, "")
 #endif
 CST(Inet_Ntop_Linkname, "")
 
+#if defined (__NetBSD__)
+# define Socket_Linkname "__socket30"
+#else
+# define Socket_Linkname "socket"
+#endif
+CST(Socket_Linkname, "")
+
 #if defined(_WIN32)
 # define Poll_Linkname "WSAPoll"
 #else
@@ -1941,6 +1948,141 @@ CST(Inet_Ntop_Linkname, "")
 CST(Poll_Linkname, "")
 
 #endif /* HAVE_SOCKETS */
+
+#if defined (__NetBSD__)
+# define Nanosleep_Linkname "__nanosleep50"
+#else
+# define Nanosleep_Linkname "nanosleep"
+#endif
+CST(Nanosleep_Linkname, "")
+
+#if defined (__NetBSD__)
+# define Gettimeofday_Linkname "__gettimeofday50"
+#else
+# define Gettimeofday_Linkname "gettimeofday"
+#endif
+CST(Gettimeofday_Linkname, "")
+
+#if defined (__NetBSD__)
+# define Clock_Getres_Linkname "__clock_getres50"
+#else
+# define Clock_Getres_Linkname "clock_getres"
+#endif
+CST(Clock_Getres_Linkname, "")
+
+#if defined (__NetBSD__)
+# define Clock_Gettime_Linkname "__clock_gettime50"
+#else
+# define Clock_Gettime_Linkname "clock_gettime"
+#endif
+CST(Clock_Gettime_Linkname, "")
+
+#if defined (__NetBSD__)
+# define Sigaddset_Linkname "__sigaddset14"
+#else
+# define Sigaddset_Linkname "sigaddset"
+#endif
+CST(Sigaddset_Linkname, "")
+
+#if defined (__NetBSD__)
+# define Sigdelset_Linkname "__sigdelset14"
+#else
+# define Sigdelset_Linkname "sigdelset"
+#endif
+CST(Sigdelset_Linkname, "")
+
+#if defined (__NetBSD__)
+# define Sigfillset_Linkname "__sigfillset14"
+#else
+# define Sigfillset_Linkname "sigfillset"
+#endif
+CST(Sigfillset_Linkname, "")
+
+#if defined (__NetBSD__)
+# define Sigismember_Linkname "__sigismember14"
+#else
+# define Sigismember_Linkname "sigismember"
+#endif
+CST(Sigismember_Linkname, "")
+
+#if defined (__NetBSD__)
+# define Sigemptyset_Linkname "__sigemptyset14"
+#else
+# define Sigemptyset_Linkname "sigemptyset"
+#endif
+CST(Sigemptyset_Linkname, "")
+
+#if defined (__NetBSD__)
+# define Sigaction_Linkname "__sigaction14"
+#else
+# define Sigaction_Linkname "sigaction"
+#endif
+CST(Sigaction_Linkname, "")
+
+#if defined (__NetBSD__)
+# define Sigaltstack_Linkname "__sigaltstack14"
+#else
+# define Sigaltstack_Linkname "sigaltstack"
+#endif
+CST(Sigaltstack_Linkname, "")
+
+#if defined (__NetBSD__)
+# define Pthread_Cond_Destroy_Linkname "__libc_cond_destroy"
+# define Pthread_Cond_Init_Linkname "__libc_cond_init"
+# define Pthread_Cond_Signal_Linkname "__libc_cond_signal"
+# define Pthread_Cond_Timedwait_Linkname "__libc_cond_timedwait"
+# define Pthread_Cond_Wait_Linkname "__libc_cond_wait"
+# define Pthread_Mutex_Destroy_Linkname "__libc_mutex_destroy"
+# define Pthread_Mutex_Init_Linkname "__libc_mutex_init"
+# define Pthread_Mutex_Lock_Linkname "__libc_mutex_lock"
+# define Pthread_Mutex_Unlock_Linkname "__libc_mutex_unlock"
+# define Pthread_Mutexattr_Destroy_Linkname "__libc_mutexattr_destroy"
+# define Pthread_Mutexattr_Init_Linkname "__libc_mutexattr_init"
+# define Pthread_Self_Linkname "__libc_thr_self"
+# define Pthread_Sigmask_Linkname "__libc_thr_sigsetmask"
+# define Sched_Yield_Linkname "__libc_thr_yield"
+# define Pthread_Exit_Linkname "__libc_thr_exit"
+# define Pthread_Setspecific_Linkname "__libc_thr_setspecific"
+# define Pthread_Getspecific_Linkname "__libc_thr_getspecific"
+# define Pthread_Key_Create_Linkname "__libc_thr_keycreate"
+#else
+# define Pthread_Cond_Destroy_Linkname "pthread_cond_destroy"
+# define Pthread_Cond_Init_Linkname "pthread_cond_init"
+# define Pthread_Cond_Signal_Linkname "pthread_cond_signal"
+# define Pthread_Cond_Timedwait_Linkname "pthread_cond_timedwait"
+# define Pthread_Cond_Wait_Linkname "pthread_cond_wait"
+# define Pthread_Mutex_Destroy_Linkname "pthread_mutex_destroy"
+# define Pthread_Mutex_Init_Linkname "pthread_mutex_init"
+# define Pthread_Mutex_Lock_Linkname "pthread_mutex_lock"
+# define Pthread_Mutex_Unlock_Linkname "pthread_mutex_unlock"
+# define Pthread_Mutexattr_Destroy_Linkname "pthread_mutexattr_destroy"
+# define Pthread_Mutexattr_Init_Linkname "pthread_mutexattr_init"
+# define Pthread_Self_Linkname "pthread_self"
+# define Pthread_Sigmask_Linkname "pthread_sigmask"
+# define Sched_Yield_Linkname "sched_yield"
+# define Pthread_Exit_Linkname "pthread_exit"
+# define Pthread_Setspecific_Linkname "pthread_setspecific"
+# define Pthread_Getspecific_Linkname "pthread_getspecific"
+# define Pthread_Key_Create_Linkname "pthread_key_create"
+#endif
+CST(Pthread_Cond_Destroy_Linkname , "")
+CST(Pthread_Cond_Init_Linkname , "")
+CST(Pthread_Cond_Signal_Linkname , "")
+CST(Pthread_Cond_Timedwait_Linkname , "")
+CST(Pthread_Cond_Wait_Linkname , "")
+CST(Pthread_Mutex_Destroy_Linkname, "")
+CST(Pthread_Mutex_Init_Linkname, "")
+CST(Pthread_Mutex_Lock_Linkname, "")
+CST(Pthread_Mutex_Unlock_Linkname, "")
+CST(Pthread_Mutexattr_Destroy_Linkname, "")
+CST(Pthread_Mutexattr_Init_Linkname, "")
+CST(Pthread_Self_Linkname, "")
+CST(Pthread_Sigmask_Linkname, "")
+CST(Sched_Yield_Linkname, "")
+CST(Pthread_Exit_Linkname, "")
+CST(Pthread_Setspecific_Linkname, "")
+CST(Pthread_Getspecific_Linkname, "")
+CST(Pthread_Key_Create_Linkname, "")
 
 /*
 
@@ -1996,7 +2138,8 @@ CNS(CLOCK_RT_Ada, "")
 #endif
 
 #if defined (__APPLE__) || defined (__linux__) || defined (__ANDROID__) \
-  || defined (__QNX__) || defined (__rtems__) || defined (DUMMY)
+  || defined (__QNX__) || defined (__rtems__) || defined (__NetBSD__) \
+  || defined (DUMMY)
 /*
 
    --  Sizes of pthread data types

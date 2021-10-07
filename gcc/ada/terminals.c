@@ -1120,6 +1120,10 @@ __gnat_setup_winsize (void *desc ATTRIBUTE_UNUSED,
 #if defined (__hpux__)
 #   include <sys/stropts.h>
 #endif
+#if defined (__NetBSD__)
+#   include <util.h>
+#   include <signal.h>
+#endif
 
 #define CDISABLE _POSIX_VDISABLE
 

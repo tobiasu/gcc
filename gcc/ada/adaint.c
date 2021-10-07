@@ -101,6 +101,10 @@
 #include <sys/time.h>
 #endif
 
+#if defined (__NetBSD__)
+#include <signal.h> /* for kill(2) */
+#endif
+
 #ifdef IN_RTS
 
 #ifdef STANDALONE

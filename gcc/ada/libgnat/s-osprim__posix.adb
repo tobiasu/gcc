@@ -30,7 +30,6 @@
 ------------------------------------------------------------------------------
 
 --  This version is for POSIX-like operating systems
-with System.Parameters;
 
 package body System.OS_Primitives is
 
@@ -49,7 +48,7 @@ package body System.OS_Primitives is
    pragma Convention (C, timespec);
 
    function nanosleep (rqtp, rmtp : not null access timespec) return Integer;
-   pragma Import (C, nanosleep, "nanosleep");
+   pragma Import (C, nanosleep, System.OS_Constants.Nanosleep_Linkname);
 
    -----------
    -- Clock --
@@ -79,7 +78,8 @@ package body System.OS_Primitives is
       function gettimeofday
         (Tv : access timeval;
          Tz : System.Address := System.Null_Address) return Integer;
-      pragma Import (C, gettimeofday, "gettimeofday");
+      pragma Import (C, gettimeofday,
+                     System.OS_Constants.Gettimeofday_Linkname);
 
    begin
       --  The return codes for gettimeofday are as follows (from man pages):

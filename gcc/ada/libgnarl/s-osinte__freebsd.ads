@@ -44,6 +44,7 @@ with Ada.Unchecked_Conversion;
 with Interfaces.C;
 
 with System.Parameters;
+with System.OS_Constants;
 
 package System.OS_Interface is
    pragma Preelaborate;
@@ -136,23 +137,23 @@ package System.OS_Interface is
    function sigaddset
      (set : access sigset_t;
       sig : Signal) return int;
-   pragma Import (C, sigaddset, "sigaddset");
+   pragma Import (C, sigaddset, System.OS_Constants.Sigaddset_Linkname);
 
    function sigdelset
      (set : access sigset_t;
       sig : Signal) return int;
-   pragma Import (C, sigdelset, "sigdelset");
+   pragma Import (C, sigdelset, System.OS_Constants.Sigdelset_Linkname);
 
    function sigfillset (set : access sigset_t) return int;
-   pragma Import (C, sigfillset, "sigfillset");
+   pragma Import (C, sigfillset, System.OS_Constants.Sigfillset_Linkname);
 
    function sigismember
      (set : access sigset_t;
       sig : Signal) return int;
-   pragma Import (C, sigismember, "sigismember");
+   pragma Import (C, sigismember, System.OS_Constants.Sigismember_Linkname);
 
    function sigemptyset (set : access sigset_t) return int;
-   pragma Import (C, sigemptyset, "sigemptyset");
+   pragma Import (C, sigemptyset, System.OS_Constants.Sigemptyset_Linkname);
 
    --  sigcontext is architecture dependent, so define it private
    type struct_sigcontext is private;
@@ -188,7 +189,7 @@ package System.OS_Interface is
      (sig  : Signal;
       act  : struct_sigaction_ptr;
       oact : struct_sigaction_ptr) return int;
-   pragma Import (C, sigaction, "sigaction");
+   pragma Import (C, sigaction, System.OS_Constants.Sigaction_Linkname);
 
    ----------
    -- Time --
@@ -200,20 +201,21 @@ package System.OS_Interface is
    type timespec is private;
 
    function nanosleep (rqtp, rmtp : access timespec) return int;
-   pragma Import (C, nanosleep, "nanosleep");
+   pragma Import (C, nanosleep, System.OS_Constants.Nanosleep_Linkname);
 
    type clockid_t is new int;
 
    function clock_getres
      (clock_id : clockid_t;
       res      : access timespec) return int;
-   pragma Import (C, clock_getres, "clock_getres");
+   pragma Import (C, clock_getres, System.OS_Constants.Clock_Getres_Linkname);
 
    function clock_gettime
      (clock_id : clockid_t;
       tp       : access timespec)
       return int;
-   pragma Import (C, clock_gettime, "clock_gettime");
+   pragma Import (C, clock_gettime,
+                  System.OS_Constants.Clock_Gettime_Linkname);
 
    function To_Duration (TS : timespec) return Duration;
    pragma Inline (To_Duration);
@@ -264,7 +266,7 @@ package System.OS_Interface is
    --  lwp_self does not exist on this thread library, revert to pthread_self
    --  which is the closest approximation (with getpid). This function is
    --  needed to share 7staprop.adb across POSIX-like targets.
-   pragma Import (C, lwp_self, "pthread_self");
+   pragma Import (C, lwp_self, System.OS_Constants.Pthread_Self_Linkname);
 
    -------------
    -- Threads --
@@ -286,20 +288,19 @@ package System.OS_Interface is
    type pthread_mutexattr_t is limited private;
    type pthread_condattr_t  is limited private;
    type pthread_key_t       is private;
+   --  XXX: NetBSD: missing functions, see this comment:
+   --  Read/Write lock not supported on freebsd. To add support both types
+   --  pthread_rwlock_t and pthread_rwlockattr_t must properly be defined
+   --  with the associated routines pthread_rwlock_[init/destroy] and
+   --  pthread_rwlock_[rdlock/wrlock/unlock].
+   type pthread_rwlock_t    is limited private;
+   type pthread_rwlockattr_t is limited private;
 
    PTHREAD_CREATE_DETACHED : constant := 1;
    PTHREAD_CREATE_JOINABLE : constant := 0;
 
    PTHREAD_SCOPE_PROCESS : constant := 0;
    PTHREAD_SCOPE_SYSTEM  : constant := 2;
-
-   --  Read/Write lock not supported on freebsd. To add support both types
-   --  pthread_rwlock_t and pthread_rwlockattr_t must properly be defined
-   --  with the associated routines pthread_rwlock_[init/destroy] and
-   --  pthread_rwlock_[rdlock/wrlock/unlock].
-
-   subtype pthread_rwlock_t     is pthread_mutex_t;
-   subtype pthread_rwlockattr_t is pthread_mutexattr_t;
 
    -----------
    -- Stack --
@@ -315,7 +316,7 @@ package System.OS_Interface is
    function sigaltstack
      (ss  : not null access stack_t;
       oss : access stack_t) return int;
-   pragma Import (C, sigaltstack, "sigaltstack");
+   pragma Import (C, sigaltstack, System.OS_Constants.Sigaltstack_Linkname);
 
    Alternate_Stack : aliased System.Address;
    --  This is a dummy definition, never used (Alternate_Stack_Size is null)
@@ -375,7 +376,8 @@ package System.OS_Interface is
      (how  : int;
       set  : access sigset_t;
       oset : access sigset_t) return int;
-   pragma Import (C, pthread_sigmask, "pthread_sigmask");
+   pragma Import (C, pthread_sigmask,
+                  System.OS_Constants.Pthread_Sigmask_Linkname);
 
    --------------------------
    -- POSIX.1c  Section 11 --
@@ -383,25 +385,31 @@ package System.OS_Interface is
 
    function pthread_mutexattr_init
      (attr : access pthread_mutexattr_t) return int;
-   pragma Import (C, pthread_mutexattr_init, "pthread_mutexattr_init");
+   pragma Import (C, pthread_mutexattr_init,
+                  System.OS_Constants.Pthread_Mutexattr_Init_Linkname);
 
    function pthread_mutexattr_destroy
      (attr : access pthread_mutexattr_t) return int;
-   pragma Import (C, pthread_mutexattr_destroy, "pthread_mutexattr_destroy");
+   pragma Import (C, pthread_mutexattr_destroy,
+                  System.OS_Constants.Pthread_Mutexattr_Destroy_Linkname);
 
    function pthread_mutex_init
      (mutex : access pthread_mutex_t;
       attr  : access pthread_mutexattr_t) return int;
-   pragma Import (C, pthread_mutex_init, "pthread_mutex_init");
+   pragma Import (C, pthread_mutex_init,
+                  System.OS_Constants.Pthread_Mutex_Init_Linkname);
 
    function pthread_mutex_destroy (mutex : access pthread_mutex_t) return int;
-   pragma Import (C, pthread_mutex_destroy, "pthread_mutex_destroy");
+   pragma Import (C, pthread_mutex_destroy,
+                  System.OS_Constants.Pthread_Mutex_Destroy_Linkname);
 
    function pthread_mutex_lock (mutex : access pthread_mutex_t) return int;
-   pragma Import (C, pthread_mutex_lock, "pthread_mutex_lock");
+   pragma Import (C, pthread_mutex_lock,
+                  System.OS_Constants.Pthread_Mutex_Lock_Linkname);
 
    function pthread_mutex_unlock (mutex : access pthread_mutex_t) return int;
-   pragma Import (C, pthread_mutex_unlock, "pthread_mutex_unlock");
+   pragma Import (C, pthread_mutex_unlock,
+                  System.OS_Constants.Pthread_Mutex_Unlock_Linkname);
 
    function pthread_condattr_init
      (attr : access pthread_condattr_t) return int;
@@ -414,32 +422,37 @@ package System.OS_Interface is
    function pthread_cond_init
      (cond : access pthread_cond_t;
       attr : access pthread_condattr_t) return int;
-   pragma Import (C, pthread_cond_init, "pthread_cond_init");
+   pragma Import (C, pthread_cond_init,
+                  System.OS_Constants.Pthread_Cond_Init_Linkname);
 
    function pthread_cond_destroy (cond : access pthread_cond_t) return int;
-   pragma Import (C, pthread_cond_destroy, "pthread_cond_destroy");
+   pragma Import (C, pthread_cond_destroy,
+                  System.OS_Constants.Pthread_Cond_Destroy_Linkname);
 
    function pthread_cond_signal (cond : access pthread_cond_t) return int;
-   pragma Import (C, pthread_cond_signal, "pthread_cond_signal");
+   pragma Import (C, pthread_cond_signal,
+                  System.OS_Constants.Pthread_Cond_Signal_Linkname);
 
    function pthread_cond_wait
      (cond  : access pthread_cond_t;
       mutex : access pthread_mutex_t) return int;
-   pragma Import (C, pthread_cond_wait, "pthread_cond_wait");
+   pragma Import (C, pthread_cond_wait,
+                  System.OS_Constants.Pthread_Cond_Wait_Linkname);
 
    function pthread_cond_timedwait
      (cond    : access pthread_cond_t;
       mutex   : access pthread_mutex_t;
       abstime : access timespec) return int;
-   pragma Import (C, pthread_cond_timedwait, "pthread_cond_timedwait");
+   pragma Import (C, pthread_cond_timedwait,
+                  System.OS_Constants.Pthread_Cond_Timedwait_Linkname);
 
    --------------------------
    -- POSIX.1c  Section 13 --
    --------------------------
 
    PTHREAD_PRIO_NONE    : constant := 0;
-   PTHREAD_PRIO_PROTECT : constant := 2;
    PTHREAD_PRIO_INHERIT : constant := 1;
+   PTHREAD_PRIO_PROTECT : constant := 2;
 
    function pthread_mutexattr_setprotocol
      (attr     : access pthread_mutexattr_t;
@@ -529,7 +542,7 @@ package System.OS_Interface is
    pragma Import (C, pthread_attr_getschedparam, "pthread_attr_getschedparam");
 
    function sched_yield return int;
-   pragma Import (C, sched_yield, "sched_yield");
+   pragma Import (C, sched_yield, System.OS_Constants.Sched_Yield_Linkname);
 
    --------------------------
    -- P1003.1c  Section 16 --
@@ -577,10 +590,10 @@ package System.OS_Interface is
    pragma Import (C, pthread_detach, "pthread_detach");
 
    procedure pthread_exit (status : System.Address);
-   pragma Import (C, pthread_exit, "pthread_exit");
+   pragma Import (C, pthread_exit, System.OS_Constants.Pthread_Exit_Linkname);
 
    function pthread_self return pthread_t;
-   pragma Import (C, pthread_self, "pthread_self");
+   pragma Import (C, pthread_self, System.OS_Constants.Pthread_Self_Linkname);
 
    --------------------------
    -- POSIX.1c  Section 17 --
@@ -589,10 +602,12 @@ package System.OS_Interface is
    function pthread_setspecific
      (key   : pthread_key_t;
       value : System.Address) return  int;
-   pragma Import (C, pthread_setspecific, "pthread_setspecific");
+   pragma Import (C, pthread_setspecific,
+      System.OS_Constants.Pthread_Setspecific_Linkname);
 
    function pthread_getspecific (key : pthread_key_t) return System.Address;
-   pragma Import (C, pthread_getspecific, "pthread_getspecific");
+   pragma Import (C, pthread_getspecific,
+      System.OS_Constants.Pthread_Getspecific_Linkname);
 
    type destructor_pointer is access procedure (arg : System.Address);
    pragma Convention (C, destructor_pointer);
@@ -600,16 +615,12 @@ package System.OS_Interface is
    function pthread_key_create
      (key        : access pthread_key_t;
       destructor : destructor_pointer) return int;
-   pragma Import (C, pthread_key_create, "pthread_key_create");
+   pragma Import (C, pthread_key_create,
+      System.OS_Constants.Pthread_Key_Create_Linkname);
 
    ------------------------------------
    -- Non-portable Pthread Functions --
    ------------------------------------
-
-   function pthread_set_name_np
-     (thread : pthread_t;
-      name   : System.Address) return int;
-   pragma Import (C, pthread_set_name_np, "pthread_set_name_np");
 
 private
 
@@ -641,12 +652,53 @@ private
    end record;
    pragma Convention (C, timespec);
 
-   type pthread_t           is new System.Address;
-   type pthread_attr_t      is new System.Address;
-   type pthread_mutex_t     is new System.Address;
-   type pthread_mutexattr_t is new System.Address;
-   type pthread_cond_t      is new System.Address;
-   type pthread_condattr_t  is new System.Address;
-   type pthread_key_t       is new int;
+   type pthread_key_t is new int;
+
+   subtype char_array is Interfaces.C.char_array;
+
+   type pthread_t is new System.Address;
+
+   type pthread_mutex_t is record
+      Data : char_array (1 .. System.OS_Constants.PTHREAD_MUTEX_SIZE);
+   end record;
+   pragma Convention (C, pthread_mutex_t);
+   for pthread_mutex_t'Alignment use size_t'Alignment;
+   --  size_t alignment used as stand-in for private system.address
+
+   type pthread_cond_t is record
+      Data : char_array (1 .. System.OS_Constants.PTHREAD_COND_SIZE);
+   end record;
+   pragma Convention (C, pthread_cond_t);
+   for pthread_cond_t'Alignment use size_t'Alignment;
+
+   type pthread_attr_t is record
+      Data : char_array (1 .. System.OS_Constants.PTHREAD_ATTR_SIZE);
+   end record;
+   pragma Convention (C, pthread_attr_t);
+   for pthread_attr_t'Alignment use size_t'Alignment;
+
+   type pthread_mutexattr_t is record
+      Data : char_array (1 .. System.OS_Constants.PTHREAD_MUTEXATTR_SIZE);
+   end record;
+   pragma Convention (C, pthread_mutexattr_t);
+   for pthread_mutexattr_t'Alignment use size_t'Alignment;
+
+   type pthread_condattr_t is record
+      Data : char_array (1 .. System.OS_Constants.PTHREAD_CONDATTR_SIZE);
+   end record;
+   pragma Convention (C, pthread_condattr_t);
+   for pthread_condattr_t'Alignment use size_t'Alignment;
+
+   type pthread_rwlock_t is record
+      Data : char_array (1 .. System.OS_Constants.PTHREAD_RWLOCK_SIZE);
+   end record;
+   pragma Convention (C, pthread_rwlock_t);
+   for pthread_rwlock_t'Alignment use size_t'Alignment;
+
+   type pthread_rwlockattr_t is record
+      Data : char_array (1 .. System.OS_Constants.PTHREAD_RWLOCKATTR_SIZE);
+   end record;
+   pragma Convention (C, pthread_rwlockattr_t);
+   for pthread_rwlockattr_t'Alignment use size_t'Alignment;
 
 end System.OS_Interface;
