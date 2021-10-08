@@ -30,6 +30,8 @@
 ------------------------------------------------------------------------------
 
 --  This version is for POSIX-like operating systems
+with System.Parameters;
+with System.OS_Constants;
 
 package body System.OS_Primitives is
 
