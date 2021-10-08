@@ -113,7 +113,7 @@ package body GNAT.Sockets.Thin is
      (Domain   : C.int;
       Typ      : C.int;
       Protocol : C.int) return C.int;
-   pragma Import (C, Syscall_Socket, System.Os_Constants.Socket_Linkname);
+   pragma Import (C, Syscall_Socket, System.OS_Constants.Socket_Linkname);
 
    procedure Disable_SIGPIPE (S : C.int);
    pragma Import (C, Disable_SIGPIPE, "__gnat_disable_sigpipe");
