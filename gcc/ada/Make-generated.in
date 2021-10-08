@@ -19,6 +19,8 @@ ada/seinfo_tables.ads ada/seinfo_tables.adb ada/sinfo.h ada/einfo.h ada/nmake.ad
 ada/stamp-gen_il: $(fsrcdir)/ada/gen_il*
 	$(MKDIR) ada/gen_il
 	cd ada/gen_il; gnatmake -q -g $(GEN_IL_FLAGS) gen_il-main
+	# NetBSD: gcc6-aux builds gen_il-main with trampolines, needs executable stack
+	-paxctl +m ada/gen_il/gen_il-main
 	# Ignore errors to work around finalization issues in older compilers
 	- cd ada/gen_il; ./gen_il-main
 	$(fsrcdir)/../move-if-change ada/gen_il/seinfo_tables.ads ada/seinfo_tables.ads
